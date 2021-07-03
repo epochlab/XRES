@@ -3,7 +3,7 @@
 **Project ID:** PcsT4LaG
 
 #### Single Image Super Resolution (SISR)
-Abstract:
+Abstract:'Single Image Super Resolution aims to reconstruct a high-resolution (HR) image for a low-resolution (LR) observation.'
 
 ### Dataset
 FFHQ
