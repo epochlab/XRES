@@ -12,6 +12,7 @@ from tensorflow.keras.optimizers import Adam
 
 from model import build_discriminator, build_generator, build_vgg
 from data import sample_data
+from loss import generator_loss, discriminator_loss
 
 physical_devices = tf.config.experimental.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -52,6 +53,7 @@ print("High Resolution Shape =", high_resolution_shape)
 
 generator = build_generator()
 discriminator = build_discriminator()
+
 vgg = build_vgg()
 
 batch_size = 16
@@ -93,15 +95,15 @@ generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
 
 mean_squared_error = tf.keras.losses.MeanSquaredError()
-binary_cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=False)
-
-def generator_loss(sr_out):
-    return binary_cross_entropy(tf.ones_like(sr_out), sr_out)
-
-def discriminator_loss(hr_out, sr_out):
-    hr_loss = binary_cross_entropy(tf.ones_like(hr_out), hr_out)
-    sr_loss = binary_cross_entropy(tf.zeros_like(sr_out), sr_out)
-    return hr_loss + sr_loss
+# binary_cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=False)
+#
+# def generator_loss(sr_out):
+#     return binary_cross_entropy(tf.ones_like(sr_out), sr_out)
+#
+# def discriminator_loss(hr_out, sr_out):
+#     hr_loss = binary_cross_entropy(tf.ones_like(hr_out), hr_out)
+#     sr_loss = binary_cross_entropy(tf.zeros_like(sr_out), sr_out)
+#     return hr_loss + sr_loss
 
 @tf.function
 def content_loss(hr, sr):
