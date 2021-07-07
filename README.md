@@ -1,4 +1,4 @@
-# xres || EPOCH Laboratory 2021
+# xres
 
 **Project ID:** PcsT4LaG
 
