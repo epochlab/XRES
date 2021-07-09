@@ -8,11 +8,11 @@
 Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (HR) image for a low-resolution (LR) observation.*
 
 ### Dataset
-FFHQ
-CelebA
+- Vimeo90K: http://toflow.csail.mit.edu/<br />
+- FFHQ: https://github.com/NVlabs/ffhq-dataset<br />
+- CelebA: https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
 
 ### Requirements
-
 - Both Linux and Windows are supported. Linux is recommended for performance and compatibility reasons.
 - 64-bit Python 3.7.9 installation.
 
