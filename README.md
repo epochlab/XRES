@@ -8,7 +8,7 @@
 Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (HR) image for a low-resolution (LR) observation.*
 
 ### Dataset
-- Vimeo90K: http://toflow.csail.mit.edu/index.html#septuplet<br />
+- Vimeo-90K: http://toflow.csail.mit.edu/index.html#septuplet<br />
 - FFHQ: https://github.com/NVlabs/ffhq-dataset<br />
 - CelebA: https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
 
