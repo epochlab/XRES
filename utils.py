@@ -1,46 +1,8 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import matplotlib.pyplot as plt
 import tensorflow as tf
-from PIL import Image
-
-def load(path):
-    return np.array(Image.open(x))
-
-def normalize(input_image):
-    return (input_image / 127.5) - 1
-
-def augment(input_image):
-    aug_image = tf.image.random_contrast(input_image, 0.8, 1.2)
-    aug_image = tf.image.random_brightness(aug_image, 0.2)
-
-    if np.random.rand(1)[0] < 0.5:
-        aug_image = np.fliplr(aug_image)
-    return aug_image
-
-def reformat(input_image):
-    if input_image.shape[0] > input_image.shape[1]:
-        align = 'portraint'
-        factor = input_image.shape[1] / high_resolution_shape[0]
-        reformat_image = tf.image.resize(input_image, size = [int(input_image.shape[0] / factor), high_resolution_shape[0]])
-    elif input_image.shape[0] < input_image.shape[1]:
-        align = 'landscape'
-        factor = input_image.shape[0] / high_resolution_shape[0]
-        reformat_image = tf.image.resize(input_image, size = [high_resolution_shape[0], int(input_image.shape[1] / factor)])
-    else:
-        align = 'square'
-        factor = input_image.shape[0] / high_resolution_shape[0]
-        reformat_image = tf.image.resize(input_image, size = [high_resolution_shape[0], high_resolution_shape[1]])
-
-    if align != 'square':
-        reformat_image = tf.image.random_crop(reformat_image, size=[high_resolution_shape[0], high_resolution_shape[1], 3])
-    return reformat_image
-
-def resize(input_image):
-    low_resolution_image = tf.image.resize(input_image, low_resolution_shape[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-    high_resolution_image = tf.image.resize(input_image, high_resolution_shape[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-
-    return low_resolution_image, high_resolution_image
 
 def rgb_mean(input_shape, dataset):
     array = np.zeros(input_shape, dtype='float32')
@@ -62,7 +24,6 @@ def generate_images(model, test_input, tar):
     for i in range(3):
         plt.subplot(1, 3, i+1)
         plt.title(title[i])
-        # getting the pixel values between [0, 1] to plot it.
         plt.imshow(display_list[i] * 0.5 + 0.5)
         plt.axis('off')
     plt.show()
