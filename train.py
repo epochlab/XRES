@@ -1,26 +1,17 @@
 import os, math, random, datetime
 
-from PIL import Image
-
 import numpy as np
-import matplotlib.pyplot as plt
 
 import tensorflow as tf
-
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.optimizers import Adam
 
-from model import build_discriminator, build_generator, build_vgg
+from model import build_discriminator, build_generator
 from data import sample_data
-from loss import generator_loss, discriminator_loss
+from loss import generator_loss, discriminator_loss, content_loss
 from utils import generate_images
 
-physical_devices = tf.config.experimental.list_physical_devices("GPU")
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
-print("Version:", tf.__version__)
 print("Eager mode:", tf.executing_eagerly())
-print("GPU is", "available" if physical_devices else "NOT AVAILABLE")
 
 OUTDIR = 'metrics'
 
@@ -38,11 +29,9 @@ for ROOT in dir_list:
         for name in sorted(files):
             filepath = os.path.join(path, name)
             dataset.append(filepath)
-
 random.shuffle(dataset)
 
 r = 4
-
 image_shape = (256, 256, 3)
 downsample_shape = (image_shape[0]//r, image_shape[1]//r, image_shape[2])
 
@@ -66,27 +55,15 @@ n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
 print("train_ds_low.shape = {}".format(train_ds_low.shape))
 print("train_ds_high.shape = {}".format(train_ds_high.shape))
-
 test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
 print("test_ds_low.shape = {}".format(test_ds_low.shape))
 print("test_ds_high.shape = {}".format(test_ds_high.shape))
 
 generator = build_generator()
 discriminator = build_discriminator()
-vgg = build_vgg()
 
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
-
-mean_squared_error = tf.keras.losses.MeanSquaredError()
-
-@tf.function
-def content_loss(hr, sr):
-    sr = tf.keras.applications.vgg19.preprocess_input(sr)
-    hr = tf.keras.applications.vgg19.preprocess_input(hr)
-    sr_features = vgg(sr) / 12.75
-    hr_features = vgg(hr) / 12.75
-    return mean_squared_error(hr_features, sr_features)
 
 @tf.function
 def train_step(lr, hr):
