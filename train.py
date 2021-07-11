@@ -15,26 +15,32 @@ from utils import generate_images
 
 print("Eager mode:", tf.executing_eagerly())
 
+# -----------------------------
+
 OUTDIR = 'metrics'
 
 ROOT_0 = '/mnt/vanguard/datasets/vimeo_90k/toflow'
 ROOT_1 = '/mnt/vanguard/datasets/ffhq-dataset/ffhq-512'
 ROOT_2 = '/mnt/vanguard/datasets/celeba_bundle/data_hq_1024'
-
-dir_list = [ROOT_1, ROOT_2]
+DIR_LIST = [ROOT_1, ROOT_2]
 
 dataset = []
-
-for ROOT in dir_list:
-    print(ROOT)
+for ROOT in DIR_LIST:
     for path, subdirs, files in os.walk(ROOT):
         for name in sorted(files):
             filepath = os.path.join(path, name)
             dataset.append(filepath)
 random.shuffle(dataset)
 
+# -----------------------------
+
 DELTA = 4
 IMAGE_SHAPE = (256, 256, 3)
+BATCH_SIZE = 16
+SPLIT_RATIO = 0.9
+VALIDATION_SIZE = 100
+EPOCHS = 300000
+
 DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])
 
 low_resolution_shape = DOWNSAMPLE_SHAPE
@@ -42,9 +48,7 @@ high_resolution_shape = IMAGE_SHAPE
 print("Low Resolution Shape =", low_resolution_shape)
 print("High Resolution Shape =", high_resolution_shape)
 
-BATCH_SIZE = 16
-SPLIT_RATIO = 0.9
-VALIDATION_SIZE = 100
+# -----------------------------
 
 total_imgs = len(dataset)
 split_index = int(math.floor(total_imgs) * SPLIT_RATIO)
@@ -58,7 +62,6 @@ test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb
 
 generator = build_generator()
 discriminator = build_discriminator()
-
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
 
@@ -106,9 +109,7 @@ os.system(command)
 
 tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-EPOCHS = 1000000
 loss_min = 9999999
-
 for epoch in range(EPOCHS):
 
     test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
