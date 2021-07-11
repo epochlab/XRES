@@ -14,7 +14,7 @@ Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (
 ### Dataset
 - [Vimeo-90K](http://toflow.csail.mit.edu/index.html#septuplet): Large-scale, high-quality dataset, consisting of 89,800 clips from vimeo.com.<br />
 - [Flickr-Faces-HQ](https://github.com/NVlabs/ffhq-dataset): High-quality image dataset of 70,000 human faces, created as a benchmark for GANs.<br />
-- [CelebFacesA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html): A large-scale face attributes dataset with more than 200k celebrity, each with 40 annotations.
+- [CelebFacesA](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html): A face attributes dataset with more than 200k celebrity photos, each with 40 annotations.
 
 ### Requirements
 - Both Linux and Windows are supported. Linux is recommended for performance and compatibility reasons.
