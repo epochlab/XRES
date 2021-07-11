@@ -22,6 +22,7 @@ OUTDIR = 'metrics'
 ROOT_0 = '/mnt/vanguard/datasets/vimeo_90k/toflow'
 ROOT_1 = '/mnt/vanguard/datasets/ffhq-dataset/ffhq-512'
 ROOT_2 = '/mnt/vanguard/datasets/celeba_bundle/data_hq_1024'
+
 DIR_LIST = [ROOT_1, ROOT_2]
 
 dataset = []
