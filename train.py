@@ -5,13 +5,12 @@ import os, math, random, datetime
 import numpy as np
 
 import tensorflow as tf
-from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.optimizers import Adam
 
 from model import build_discriminator, build_generator
 from data import sample_data
 from loss import generator_loss, discriminator_loss, content_loss
-from utils import generate_images
+from utils import generate_images, log_callback
 
 print("Eager mode:", tf.executing_eagerly())
 
@@ -90,27 +89,11 @@ def train_step(lr, hr):
 
     return con_loss, gen_loss, perc_loss, disc_loss
 
-timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-print("ID:", timestamp)
+# -----------------------------
 
-log_dir = OUTDIR + "/logs"
-summary_writer = tf.summary.create_file_writer(log_dir + "/fit/" + timestamp)
-
-checkpoint_dir = OUTDIR + '/training_checkpoints/'
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
-checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
-                                 discriminator_optimizer=discriminator_optimizer,
-                                 generator=generator,
-                                 discriminator=discriminator)
-
-# checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-
-command = "tensorboard --logdir=" + str(log_dir) + " --port=6006 &"
-os.system(command)
-
-tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)
-
+timestamp, summary_writer, checkpoint_prefix = log_callback(OUTDIR, generator, discriminator, generator_optimizer, discriminator_optimizer)
 loss_min = 9999999
+
 for epoch in range(EPOCHS):
 
     test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
