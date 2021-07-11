@@ -14,7 +14,7 @@ Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (
 
 ### Packages
 
-`tensorflow-2.x`
+`numpy` `tensorflow-2.x` `pillow`
 
 ### Requirements
 - Both Linux and Windows are supported. Linux is recommended for performance and compatibility reasons.
