@@ -1,10 +1,8 @@
+#!/usr/bin/env python3
+
 import os, math, random, datetime
 
-from PIL import Image
-
 import numpy as np
-import matplotlib.pyplot as plt
-
 import tensorflow as tf
 
 r = 4
@@ -19,8 +17,6 @@ print("Low Resolution Shape =", low_resolution_shape)
 print("High Resolution Shape =", high_resolution_shape)
 
 batch_size = 16
-split_ratio = 0.9
-validation_size = 100
 
 def load(file):
     file = tf.io.read_file(file)
@@ -71,7 +67,6 @@ def resize(input_image):
     return low_resolution_image, high_resolution_image
 
 def sample_data(data, coco, rgb_mean):
-
     img_batch = np.random.choice(data, size=batch_size)
 
     ds_low = []
