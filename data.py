@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import os, math, random, datetime
-
 import numpy as np
 import tensorflow as tf
 
@@ -12,11 +10,6 @@ downsample_shape = (image_shape[0]//r, image_shape[1]//r, image_shape[2])
 
 low_resolution_shape = downsample_shape
 high_resolution_shape = image_shape
-
-print("Low Resolution Shape =", low_resolution_shape)
-print("High Resolution Shape =", high_resolution_shape)
-
-batch_size = 16
 
 def load(file):
     file = tf.io.read_file(file)
@@ -66,7 +59,7 @@ def resize(input_image):
 
     return low_resolution_image, high_resolution_image
 
-def sample_data(data, coco, rgb_mean):
+def sample_data(data, batch_size, coco, rgb_mean):
     img_batch = np.random.choice(data, size=batch_size)
 
     ds_low = []

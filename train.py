@@ -52,22 +52,22 @@ high_resolution_shape = image_shape
 print("Low Resolution Shape =", low_resolution_shape)
 print("High Resolution Shape =", high_resolution_shape)
 
-batch_size = 16
-split_ratio = 0.9
-validation_size = 100
+BATCH_SIZE = 16
+SPLIT_RATIO = 0.9
+VALIDATION_SIZE = 100
 
 total_imgs = len(dataset)
-split_index = int(math.floor(total_imgs) * split_ratio)
+split_index = int(math.floor(total_imgs) * SPLIT_RATIO)
 
 n_train_imgs = dataset[:split_index]
-n_test_imgs = dataset[split_index:-validation_size]
-n_val_imgs = dataset[total_imgs-validation_size:]
+n_test_imgs = dataset[split_index:-VALIDATION_SIZE]
+n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 
-train_ds_low, train_ds_high = sample_data(n_train_imgs, coco=True, rgb_mean=True)
+train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
 print("train_ds_low.shape = {}".format(train_ds_low.shape))
 print("train_ds_high.shape = {}".format(train_ds_high.shape))
 
-test_ds_low, test_ds_high = sample_data(n_test_imgs, coco=False, rgb_mean=False)
+test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
 print("test_ds_low.shape = {}".format(test_ds_low.shape))
 print("test_ds_high.shape = {}".format(test_ds_high.shape))
 
@@ -137,15 +137,15 @@ loss_min = 9999999
 
 for epoch in range(EPOCHS):
 
-    test_ds_low, test_ds_high = sample_data(n_test_imgs, coco=False, rgb_mean=False)
-    train_ds_low, train_ds_high = sample_data(n_train_imgs, coco=True, rgb_mean=True)
+    test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
+    train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
 
     generate_images(generator, test_ds_low, test_ds_high)
 
     print("Epoch: ", epoch)
 
     # Train
-    for i in range(batch_size):
+    for i in range(BATCH_SIZE):
         print('.', end='')
         if (i+1) % 100 == 0:
             print()
