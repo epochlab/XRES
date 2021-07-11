@@ -13,6 +13,7 @@ from tensorflow.keras.optimizers import Adam
 from model import build_discriminator, build_generator, build_vgg
 from data import sample_data
 from loss import generator_loss, discriminator_loss
+from utils import generate_images
 
 physical_devices = tf.config.experimental.list_physical_devices("GPU")
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -74,22 +75,6 @@ print("train_ds_high.shape = {}".format(train_ds_high.shape))
 test_ds_low, test_ds_high = sample_data(n_test_imgs, coco=False, rgb_mean=False)
 print("test_ds_low.shape = {}".format(test_ds_low.shape))
 print("test_ds_high.shape = {}".format(test_ds_high.shape))
-
-def generate_images(model, test_input, tar):
-    prediction = model(test_input, training=False)
-
-    plt.figure(figsize=(15,15))
-
-    display_list = [test_input[0], tar[0], prediction[0]]
-    title = ['Input Image', 'Ground Truth', 'Predicted Image']
-
-    for i in range(3):
-        plt.subplot(1, 3, i+1)
-        plt.title(title[i])
-        # getting the pixel values between [0, 1] to plot it.
-        plt.imshow(display_list[i] * 0.5 + 0.5)
-        plt.axis('off')
-    plt.show()
 
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
