@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
-import matplotlib.pyplot as plt
+from PIL import Image
 import tensorflow as tf
 
 def rgb_mean(input_shape, dataset):
@@ -16,17 +16,8 @@ def rgb_mean(input_shape, dataset):
 
 def generate_images(model, test_input, tar):
     prediction = model(test_input, training=False)
-    plt.figure(figsize=(15,15))
-
-    display_list = [test_input[0], tar[0], prediction[0]]
-    title = ['Input Image', 'Ground Truth', 'Predicted Image']
-
-    for i in range(3):
-        plt.subplot(1, 3, i+1)
-        plt.title(title[i])
-        plt.imshow(display_list[i] * 0.5 + 0.5)
-        plt.axis('off')
-    plt.show()
+    data = np.array(prediction[0] * 0.5 + 0.5) * 255.0
+    Image.fromarray(np.uint8(data)).save('step.png')
 
 def evaluate_psnr(model, ds_low, ds_high):
     psnr_values = []
