@@ -3,7 +3,7 @@
 import tensorflow as tf
 from model import build_vgg
 
-vgg = build_vgg()
+vgg = build_vgg((256, 256, 3))
 
 mean_squared_error = tf.keras.losses.MeanSquaredError()
 binary_cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=False)

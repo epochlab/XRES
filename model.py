@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
 
-from tensorflow.keras import Sequential, Input, Model
-from tensorflow.keras.layers import Conv2D, UpSampling2D, BatchNormalization, Activation, LeakyReLU, PReLU, Add, Dense, Flatten, Lambda
-from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Conv2D, BatchNormalization, UpSampling2D, Activation, LeakyReLU, PReLU, Add, Dense, Flatten
 from tensorflow.keras.applications.vgg19 import VGG19
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
-
-r = 4
-image_shape = (256, 256, 3)
-downsample_shape = (image_shape[0]//r, image_shape[1]//r, image_shape[2])
-low_resolution_shape = downsample_shape
-high_resolution_shape = image_shape
 
 def residual_block(x):
     filters = [64, 64]
@@ -35,13 +26,11 @@ def upsampling_block(model, kernal_size, filters, strides):
     model = Conv2D(filters = filters, kernel_size = kernal_size, strides = strides, padding = "same")(model)
     model = UpSampling2D(size = 2)(model)
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
-
     return model
-def build_generator():
 
+def build_generator(input_shape):
     residual_blocks = 16
     momentum = 0.8
-    input_shape = low_resolution_shape
 
     input_layer = Input(shape=input_shape)
 
@@ -70,11 +59,11 @@ def discriminator_block(model, filters, kernel_size, strides):
     model = Conv2D(filters = filters, kernel_size = kernel_size, strides = strides, padding = "same")(model)
     model = BatchNormalization(momentum = 0.5)(model)
     model = LeakyReLU(alpha = 0.2)(model)
-
     return model
 
-def build_discriminator(num_filters = 64):
-    input_shape = high_resolution_shape
+def build_discriminator(input_shape):
+    num_filters = 64
+
     input_layer = Input(shape = input_shape)
 
     dis1 = Conv2D(num_filters, 3, padding='same')(input_layer)
@@ -99,9 +88,8 @@ def build_discriminator(num_filters = 64):
     output = Activation('sigmoid')(output)
 
     model = Model(inputs=[input_layer], outputs=[output], name='discriminator')
-
     return model
 
-def build_vgg():
-    vgg = VGG19(input_shape=(high_resolution_shape), weights='imagenet', include_top=False)
+def build_vgg(input_shape):
+    vgg = VGG19(input_shape=input_shape, weights='imagenet', include_top=False)
     return Model(vgg.input, vgg.layers[9].output)

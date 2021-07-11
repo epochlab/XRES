@@ -60,8 +60,8 @@ n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
 test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
 
-generator = build_generator()
-discriminator = build_discriminator()
+generator = build_generator(low_resolution_shape)
+discriminator = build_discriminator(high_resolution_shape)
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
 
