@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, math, random, datetime
+import os, math, random
 
 import numpy as np
 
@@ -95,13 +95,12 @@ timestamp, summary_writer, checkpoint_prefix = log_callback(OUTDIR, generator, d
 loss_min = 9999999
 
 for epoch in range(EPOCHS):
+    print("Epoch: ", epoch)
 
     test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
     train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
 
     generate_images(generator, test_ds_low, test_ds_high)
-
-    print("Epoch: ", epoch)
 
     # Train
     for i in range(BATCH_SIZE):
