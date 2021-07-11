@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os, math, random, datetime
 
 import numpy as np
@@ -31,13 +33,12 @@ for ROOT in dir_list:
             dataset.append(filepath)
 random.shuffle(dataset)
 
-r = 4
-image_shape = (256, 256, 3)
-downsample_shape = (image_shape[0]//r, image_shape[1]//r, image_shape[2])
+DELTA = 4
+IMAGE_SHAPE = (256, 256, 3)
+DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])
 
-low_resolution_shape = downsample_shape
-high_resolution_shape = image_shape
-
+low_resolution_shape = DOWNSAMPLE_SHAPE
+high_resolution_shape = IMAGE_SHAPE
 print("Low Resolution Shape =", low_resolution_shape)
 print("High Resolution Shape =", high_resolution_shape)
 
@@ -53,11 +54,7 @@ n_test_imgs = dataset[split_index:-VALIDATION_SIZE]
 n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 
 train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
-print("train_ds_low.shape = {}".format(train_ds_low.shape))
-print("train_ds_high.shape = {}".format(train_ds_high.shape))
 test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
-print("test_ds_low.shape = {}".format(test_ds_low.shape))
-print("test_ds_high.shape = {}".format(test_ds_high.shape))
 
 generator = build_generator()
 discriminator = build_discriminator()

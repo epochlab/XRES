@@ -1,4 +1,4 @@
-import tensorflow as tf
+#!/usr/bin/env python3
 
 from tensorflow.keras import Sequential, Input, Model
 from tensorflow.keras.layers import Conv2D, UpSampling2D, BatchNormalization, Activation, LeakyReLU, PReLU, Add, Dense, Flatten, Lambda
