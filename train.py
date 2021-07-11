@@ -52,11 +52,6 @@ high_resolution_shape = image_shape
 print("Low Resolution Shape =", low_resolution_shape)
 print("High Resolution Shape =", high_resolution_shape)
 
-generator = build_generator()
-discriminator = build_discriminator()
-
-vgg = build_vgg()
-
 batch_size = 16
 split_ratio = 0.9
 validation_size = 100
@@ -75,6 +70,10 @@ print("train_ds_high.shape = {}".format(train_ds_high.shape))
 test_ds_low, test_ds_high = sample_data(n_test_imgs, coco=False, rgb_mean=False)
 print("test_ds_low.shape = {}".format(test_ds_low.shape))
 print("test_ds_high.shape = {}".format(test_ds_high.shape))
+
+generator = build_generator()
+discriminator = build_discriminator()
+vgg = build_vgg()
 
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
