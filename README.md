@@ -21,6 +21,6 @@ Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (
 - 64-bit Python 3.7.9 installation.
 
 ### Acknowledgments
-[Photo-Realistic Single Image Super-Resolution Using a GAN](https://arxiv.org/pdf/1609.04802.pdf) - (SRGAN)<br />
-[Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/pdf/1707.02921.pdf) - (EDSR: NTIRE 2017)<br />
-[Wide Activation for Efficient and Accurate Image Super-Resolution](https://arxiv.org/pdf/1808.08718.pdf) - (WDSR: NTIRE 2018)
+[Photo-Realistic Single Image Super-Resolution Using a GAN](https://arxiv.org/pdf/1609.04802.pdf) (SRGAN)<br />
+[Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/pdf/1707.02921.pdf) (EDSR: NTIRE 2017)<br />
+[Wide Activation for Efficient and Accurate Image Super-Resolution](https://arxiv.org/pdf/1808.08718.pdf) (WDSR: NTIRE 2018)
