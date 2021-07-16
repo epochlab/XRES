@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 
-from model import build_discriminator, build_generator
+from model.srgan import build_discriminator, build_generator
 from data import sample_data
 from loss import generator_loss, discriminator_loss, content_loss
 from utils import generate_images, log_callback
