@@ -12,12 +12,11 @@ def residual_block(x):
     activation = "relu"
 
     res = Conv2D(filters=filters[0], kernel_size=kernel_size, strides=strides, padding=padding)(x)
-    res = BatchNormalization(momentum=momentum)(res)
     res = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(res)
     res = Conv2D(filters=filters[1], kernel_size=kernel_size, strides=strides, padding=padding)(res)
-    res = BatchNormalization(momentum=momentum)(res)
 
-    # Add res and x
+
+
     res = Add()([res, x])
     return res
 
@@ -27,7 +26,7 @@ def upsampling_block(model, kernal_size, filters, strides):
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
     return model
 
-def build_generator(input_shape):
+def build_edsr(input_shape):
     residual_blocks = 16
     momentum = 0.8
 
@@ -60,9 +59,7 @@ def discriminator_block(model, filters, kernel_size, strides):
     model = LeakyReLU(alpha = 0.2)(model)
     return model
 
-def build_discriminator(input_shape):
-    num_filters = 64
-
+def build_discriminator(input_shape, num_filters = 64):
     input_layer = Input(shape = input_shape)
 
     dis1 = Conv2D(num_filters, 3, padding='same')(input_layer)
