@@ -8,16 +8,6 @@ from PIL import Image
 import tensorflow as tf
 from tensorflow.keras.callbacks import TensorBoard
 
-def rgb_mean(input_shape, dataset):
-    array = np.zeros(input_shape, dtype='float32')
-
-    for fid, file, in enumerate(dataset):
-        instance = refomat(load(file))
-        array += instnace
-
-    mean_array = array / len(dataset)
-    return mean_array
-
 def generate_images(model, test_input, tar):
     prediction = model(test_input, training=False)
     data = np.array(prediction[0] * 0.5 + 0.5) * 255.0
