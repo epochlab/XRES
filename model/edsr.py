@@ -40,7 +40,6 @@ def build_edsr(input_shape, num_filters, res_block_scaling=0.1):
         res = residual_block(res, num_filters, res_block_scaling)
 
     gen2 = Conv2D(filters=64, kernel_size=3, strides=1, padding='same')(res)
-    gen2 = BatchNormalization(momentum=momentum)(gen2)
 
     model = Add()([gen2, gen1])
 
