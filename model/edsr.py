@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from tensorflow.keras import Input, Model
-from tensorflow.keras.layers import Conv2D, BatchNormalization, UpSampling2D, Activation, LeakyReLU, PReLU, Add, Dense, Flatten
+from tensorflow.keras.layers import Conv2D, Lambda, BatchNormalization, UpSampling2D, Activation, LeakyReLU, PReLU, Add, Dense, Flatten
 
-def residual_block(x):
+def residual_block(x, num_filters, scaling):
     filters = [64, 64]
     kernel_size = 3
     strides = 1
@@ -11,11 +11,11 @@ def residual_block(x):
     momentum = 0.8
     activation = "relu"
 
-    res = Conv2D(filters=filters[0], kernel_size=kernel_size, strides=strides, padding=padding)(x)
-    res = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(res)
-    res = Conv2D(filters=filters[1], kernel_size=kernel_size, strides=strides, padding=padding)(res)
+    res = Conv2D(num_filters, 3, padding='same', activation='relu')(x)
+    res = Conv2D(num_filters, 3, padding='same')(res)
 
-
+    if scaling:
+        res = Lambda(lambda t: t * scaling)(res)
 
     res = Add()([res, x])
     return res
@@ -26,7 +26,7 @@ def upsampling_block(model, kernal_size, filters, strides):
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
     return model
 
-def build_edsr(input_shape):
+def build_edsr(input_shape, num_filters, res_block_scaling=0.1):
     residual_blocks = 16
     momentum = 0.8
 
@@ -35,9 +35,9 @@ def build_edsr(input_shape):
     gen1 = Conv2D(filters=64, kernel_size=9, strides=1, padding='same')(input_layer)
     gen1 = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(gen1)
 
-    res = residual_block(gen1)
+    res = residual_block(gen1, num_filters, res_block_scaling)
     for i in range(residual_blocks - 1):
-        res = residual_block(res)
+        res = residual_block(res, num_filters, res_block_scaling)
 
     gen2 = Conv2D(filters=64, kernel_size=3, strides=1, padding='same')(res)
     gen2 = BatchNormalization(momentum=momentum)(gen2)
