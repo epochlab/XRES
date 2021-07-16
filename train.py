@@ -8,7 +8,8 @@ import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 
 from model.srgan import build_discriminator, build_generator
-from data import sample_data
+from model.edsr import build_generator
+from data import sample_data, rgb_mean
 from loss import generator_loss, discriminator_loss, content_loss
 from utils import generate_images, log_callback
 
@@ -34,14 +35,21 @@ random.shuffle(dataset)
 
 # -----------------------------
 
-DELTA = 4
-IMAGE_SHAPE = (256, 256, 3)
-BATCH_SIZE = 16
+NETWORK = "EDSR"                                                                                # SRGAN | EDSR
+RGB_MEAN = False                                                                                # Feature-wise RGB mean average
+
+DELTA = 4                                                                                       # Scale factor (r)
+IMAGE_SHAPE = (256, 256, 3)                                                                     # High Resolution Shape
+DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])               # Low Resolution Shape
+
+BATCH_SIZE = 8
 SPLIT_RATIO = 0.9
 VALIDATION_SIZE = 100
-EPOCHS = 300000
 
-DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])
+RES_BLOCKS = 32
+NUM_FILTERS = 256
+
+EPOCHS = 300000
 
 low_resolution_shape = DOWNSAMPLE_SHAPE
 high_resolution_shape = IMAGE_SHAPE
@@ -60,10 +68,19 @@ n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
 test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
 
-generator = build_generator(low_resolution_shape)
+if NETWORK == "SRGAN":
+    generator = build_generator(low_resolution_shape)
+if NETWORK == "EDSR":
+    # generator = build_edsr(low_resolution_shape, DELTA, NUM_FILTERS, RES_BLOCKS)
+    generator = build_generator(low_resolution_shape)
+
 discriminator = build_discriminator(high_resolution_shape)
+
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
+
+if RGB_MEAN:
+    mean_array = rgb_mean(IMAGE_SHAPE, dataset)
 
 @tf.function
 def train_step(lr, hr):
@@ -98,7 +115,7 @@ for epoch in range(EPOCHS):
     print("Epoch: ", epoch)
 
     test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
-    train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
+    train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=RGB_MEAN)
 
     generate_images(generator, test_ds_low, test_ds_high)
 
