@@ -82,3 +82,14 @@ def sample_data(data, batch_size, coco, rgb_mean):
     ds_high = tf.convert_to_tensor(ds_high)
 
     return ds_low, ds_high
+
+def rgb_mean(input_shape, dataset):
+    array = np.zeros(input_shape, dtype='float32')
+
+    for fid, file, in enumerate(dataset):
+        print(str(fid) + "/" + str(len(dataset)-1))
+        instance = reformat(load(file))
+        array += instance
+
+    mean_array = array / len(dataset)
+    return mean_array
