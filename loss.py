@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import tensorflow as tf
-from model import build_vgg
+from model.common import build_vgg
 
 vgg = build_vgg((256, 256, 3))
 
