@@ -46,8 +46,8 @@ BATCH_SIZE = 16
 SPLIT_RATIO = 0.9
 VALIDATION_SIZE = 100
 
-RES_BLOCKS = 32
-NUM_FILTERS = 256
+RES_BLOCKS = 16
+NUM_FILTERS = 64
 
 EPOCHS = 300000
 
@@ -72,7 +72,7 @@ if NETWORK == "SRGAN":
     generator = build_generator(low_resolution_shape)
 if NETWORK == "EDSR":
     # generator = build_edsr(low_resolution_shape, DELTA, NUM_FILTERS, RES_BLOCKS)
-    generator = build_edsr(low_resolution_shape)
+    generator = build_edsr(low_resolution_shape, NUM_FILTERS)
 
 discriminator = build_discriminator(high_resolution_shape)
 
