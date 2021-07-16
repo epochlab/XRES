@@ -8,7 +8,7 @@ import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 
 from model.srgan import build_discriminator, build_generator
-from model.edsr import build_generator
+from model.edsr import build_edsr
 from data import sample_data, rgb_mean
 from loss import generator_loss, discriminator_loss, content_loss
 from utils import generate_images, log_callback
@@ -42,7 +42,7 @@ DELTA = 4                                                                       
 IMAGE_SHAPE = (256, 256, 3)                                                                     # High Resolution Shape
 DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])               # Low Resolution Shape
 
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 SPLIT_RATIO = 0.9
 VALIDATION_SIZE = 100
 
@@ -72,7 +72,7 @@ if NETWORK == "SRGAN":
     generator = build_generator(low_resolution_shape)
 if NETWORK == "EDSR":
     # generator = build_edsr(low_resolution_shape, DELTA, NUM_FILTERS, RES_BLOCKS)
-    generator = build_generator(low_resolution_shape)
+    generator = build_edsr(low_resolution_shape)
 
 discriminator = build_discriminator(high_resolution_shape)
 
