@@ -13,9 +13,9 @@ def edsr_residual(x, num_filters, scaling):
     res = Add()([res, x])
     return res
 
-def upsampling_block(model, kernal_size, filters):
-    model = Conv2D(filters = filters, kernel_size = kernal_size, padding = "same")(model)
-    model = UpSampling2D(size = 2)(model)
+def upsampling_block(model, num_filters, kernal_size):
+    model = Conv2D(num_filters, kernal_size, padding="same")(model)
+    model = UpSampling2D(size= 2)(model)
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
     return model
 
@@ -32,7 +32,7 @@ def build_edsr(input_shape, num_filters, residual_blocks, res_block_scaling=0.1)
     model = Add()([gen2, gen1])
 
     for index in range(2):
-        model = upsampling_block(model, 3, 256)
+        model = upsampling_block(model, 256, 3)
 
     output = Conv2D(3, 9, padding='same')(model)
     output = Activation('tanh')(output)
@@ -40,8 +40,8 @@ def build_edsr(input_shape, num_filters, residual_blocks, res_block_scaling=0.1)
     model = Model(inputs=[input_layer], outputs=[output], name='edsr_generator')
     return model
 
-def discriminator_block(model, filters, kernel_size, strides):
-    model = Conv2D(filters, kernel_size, strides, padding = "same")(model)
+def discriminator_block(model, num_filters, kernel_size, strides):
+    model = Conv2D(num_filters, kernel_size, strides, padding = "same")(model)
     model = BatchNormalization(momentum = 0.5)(model)
     model = LeakyReLU(alpha = 0.2)(model)
     return model
