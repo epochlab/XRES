@@ -72,7 +72,7 @@ if NETWORK == "SRGAN":
     generator = build_generator(low_resolution_shape)
 if NETWORK == "EDSR":
     # generator = build_edsr(low_resolution_shape, DELTA, NUM_FILTERS, RES_BLOCKS)
-    generator = build_edsr(low_resolution_shape, NUM_FILTERS)
+    generator = build_edsr(low_resolution_shape, NUM_FILTERS, RES_BLOCKS)
 
 discriminator = build_discriminator(high_resolution_shape)
 
