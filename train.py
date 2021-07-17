@@ -35,28 +35,30 @@ random.shuffle(dataset)
 
 # -----------------------------
 
-NETWORK = "EDSR"                                                                                # SRGAN | EDSR
-RGB_MEAN = False                                                                                # Feature-wise RGB mean average
+NETWORK = "EDSR"
+RGB_MEAN = False
+COCO = True
 
-DELTA = 4                                                                                       # Scale factor (r)
-IMAGE_SHAPE = (256, 256, 3)                                                                     # High Resolution Shape
-DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])               # Low Resolution Shape
+DELTA = 4
+IMAGE_SHAPE = (256, 256, 3)
+DOWNSAMPLE_SHAPE = (IMAGE_SHAPE[0]//DELTA, IMAGE_SHAPE[1]//DELTA, IMAGE_SHAPE[2])
 
 BATCH_SIZE = 16
 SPLIT_RATIO = 0.9
 VALIDATION_SIZE = 100
 
-RES_BLOCKS = 16
-NUM_FILTERS = 64
+RES_BLOCKS = 32
+NUM_FILTERS = 256
 
 EPOCHS = 300000
 
-low_resolution_shape = DOWNSAMPLE_SHAPE
-high_resolution_shape = IMAGE_SHAPE
-print("Low Resolution Shape =", low_resolution_shape)
-print("High Resolution Shape =", high_resolution_shape)
+print("Low Resolution Shape =", DOWNSAMPLE_SHAPE)
+print("High Resolution Shape =", IMAGE_SHAPE)
 
 # -----------------------------
+
+if RGB_MEAN:
+    mean_array = rgb_mean(IMAGE_SHAPE, dataset)
 
 total_imgs = len(dataset)
 split_index = int(math.floor(total_imgs) * SPLIT_RATIO)
@@ -65,22 +67,18 @@ n_train_imgs = dataset[:split_index]
 n_test_imgs = dataset[split_index:-VALIDATION_SIZE]
 n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 
-train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=True)
+train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, COCO, RGB_MEAN)
 test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
 
 if NETWORK == "SRGAN":
-    generator = build_generator(low_resolution_shape)
+    generator = build_generator(DOWNSAMPLE_SHAPE)
 if NETWORK == "EDSR":
-    # generator = build_edsr(low_resolution_shape, DELTA, NUM_FILTERS, RES_BLOCKS)
-    generator = build_edsr(low_resolution_shape, NUM_FILTERS, RES_BLOCKS)
+    generator = build_edsr(DOWNSAMPLE_SHAPE, NUM_FILTERS, RES_BLOCKS)
 
-discriminator = build_discriminator(high_resolution_shape)
+discriminator = build_discriminator(IMAGE_SHAPE)
 
 generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
-
-if RGB_MEAN:
-    mean_array = rgb_mean(IMAGE_SHAPE, dataset)
 
 @tf.function
 def train_step(lr, hr):
