@@ -29,7 +29,7 @@ def gridless_upsampling(model, num_filters, scale):
 
     return model
 
-def build_edsr(input_shape, num_filters, residual_blocks, res_block_scaling=0.1):
+def build_edsr(input_shape, scale, num_filters, residual_blocks, res_block_scaling=0.1):
     input_layer = Input(shape=input_shape)
 
     gen1 = Conv2D(num_filters, kernel_size=9, padding='same')(input_layer)
@@ -41,7 +41,7 @@ def build_edsr(input_shape, num_filters, residual_blocks, res_block_scaling=0.1)
     gen2 = Conv2D(num_filters, kernel_size=3, padding='same')(res)
     model = Add()([gen2, gen1])
 
-    model = gridless_upsampling(model, 256, 4)
+    model = gridless_upsampling(model, 256, scale)
 
     output = Conv2D(3, 9, padding='same')(model)
     output = Activation('tanh')(output)
@@ -56,7 +56,7 @@ def discriminator_block(model, num_filters, kernel_size, strides):
     return model
 
 def build_discriminator(input_shape, num_filters = 64):
-    input_layer = Input(shape = input_shape)
+    input_layer = Input(shape = (255,255,3))
 
     dis1 = Conv2D(num_filters, 3, padding='same')(input_layer)
     dis1 = LeakyReLU(alpha = 0.2)(dis1)

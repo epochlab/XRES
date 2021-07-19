@@ -75,7 +75,7 @@ loss = lossModule(IMAGE_SHAPE)
 if NETWORK == "SRGAN":
     generator = build_srgan(DOWNSAMPLE_SHAPE)
 if NETWORK == "EDSR":
-    generator = build_edsr(DOWNSAMPLE_SHAPE, NUM_FILTERS, RES_BLOCKS)
+    generator = build_edsr(DOWNSAMPLE_SHAPE, DELTA, NUM_FILTERS, RES_BLOCKS)
 
 discriminator = build_discriminator(IMAGE_SHAPE)
 
@@ -85,22 +85,18 @@ discriminator_optimizer = Adam(0.0002, 0.5)
 @tf.function
 def train_step(lr, hr):
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-        # Forward pass
         sr = generator(lr, training=True)
         hr_output = discriminator(hr, training=True)
         sr_output = discriminator(sr, training=True)
 
-        # Compute losses
         con_loss = loss.content_loss(hr, sr)
         gen_loss = loss.generator_loss(sr_output)
         perc_loss = con_loss + 0.001 * gen_loss
         disc_loss = loss.discriminator_loss(hr_output, sr_output)
 
-    # Compute gradients
     generator_gradients = gen_tape.gradient(perc_loss, generator.trainable_variables)
     discriminator_gradients = disc_tape.gradient(disc_loss, discriminator.trainable_variables)
 
-    # Update weights
     generator_optimizer.apply_gradients(zip(generator_gradients, generator.trainable_variables))
     discriminator_optimizer.apply_gradients(zip(discriminator_gradients, discriminator.trainable_variables))
 
@@ -119,7 +115,6 @@ for epoch in range(EPOCHS):
 
     generate_images(generator, test_ds_low, test_ds_high)
 
-    # Train
     for i in range(BATCH_SIZE):
         print('.', end='')
         if (i+1) % 100 == 0:
