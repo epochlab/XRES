@@ -57,9 +57,6 @@ print("High Resolution Shape =", IMAGE_SHAPE)
 
 # -----------------------------
 
-dataIO = dataIO(DELTA, IMAGE_SHAPE)
-loss = lossModule(IMAGE_SHAPE)
-
 if RGB_MEAN:
     mean_array = dataIO.rgb_mean(IMAGE_SHAPE, dataset)
 
@@ -69,6 +66,11 @@ split_index = int(math.floor(total_imgs) * SPLIT_RATIO)
 n_train_imgs = dataset[:split_index]
 n_test_imgs = dataset[split_index:-VALIDATION_SIZE]
 n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
+
+# -----------------------------
+
+dataIO = dataIO(DELTA, IMAGE_SHAPE)
+loss = lossModule(IMAGE_SHAPE)
 
 if NETWORK == "SRGAN":
     generator = build_generator(DOWNSAMPLE_SHAPE)
