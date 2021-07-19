@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from PIL import Image
 import numpy as np
 import tensorflow as tf
 
@@ -9,10 +10,8 @@ class dataIO:
         self.low_resolution_shape = (image_shape[0]//scale, image_shape[1]//scale, image_shape[2])
 
     def load(self, file):
-        file = tf.io.read_file(file)
-        image = tf.image.decode_png(file)
-        data = tf.cast(image, tf.float32)
-        return data
+        img = Image.open(file)
+        return np.array(img, dtype='float32')
 
     def normalize(self, input_image):
         n_image = (input_image / 127.5) - 1
@@ -24,7 +23,7 @@ class dataIO:
         aug_image = tf.image.random_contrast(aug_image, 0.8, 1.2)
         aug_img = tf.image.random_brightness(aug_image, 0.2)
 
-        if tf.random.uniform(shape=[]) < 0.5:
+        if np.random.random_sample() < 0.5:
             img = tf.image.flip_left_right(aug_image)
 
         return aug_image
@@ -51,7 +50,6 @@ class dataIO:
     def resize(self, input_image):
         low_resolution_image = tf.image.resize(input_image, self.low_resolution_shape[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
         high_resolution_image = tf.image.resize(input_image, self.high_resolution_shape[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-
         return low_resolution_image, high_resolution_image
 
     def sample_data(self, data, batch_size, coco, rgb_mean):
