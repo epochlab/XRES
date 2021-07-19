@@ -7,14 +7,13 @@ def residual_block(x):
     filters = [64, 64]
     kernel_size = 3
     strides = 1
-    padding = "same"
     momentum = 0.8
     activation = "relu"
 
-    res = Conv2D(filters=filters[0], kernel_size=kernel_size, strides=strides, padding=padding)(x)
+    res = Conv2D(filters[0], kernel_size, strides, padding="same")(x)
     res = BatchNormalization(momentum=momentum)(res)
     res = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(res)
-    res = Conv2D(filters=filters[1], kernel_size=kernel_size, strides=strides, padding=padding)(res)
+    res = Conv2D(filters[1], kernel_size, strides, padding="same")(res)
     res = BatchNormalization(momentum=momentum)(res)
 
     # Add res and x
@@ -22,8 +21,8 @@ def residual_block(x):
     return res
 
 def upsampling_block(model, kernal_size, filters, strides):
-    model = Conv2D(filters = filters, kernel_size = kernal_size, strides = strides, padding = "same")(model)
-    model = UpSampling2D(size = 2)(model)
+    model = Conv2D(filters, kernal_size, strides, padding="same")(model)
+    model = UpSampling2D(size=2)(model)
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
     return model
 
@@ -51,13 +50,13 @@ def build_srgan(input_shape):
     output = Conv2D(filters=3, kernel_size=9, strides=1, padding='same')(model)
     output = Activation('tanh')(output)
 
-    model = Model(inputs=[input_layer], outputs=[output], name='generator')
+    model = Model(inputs=[input_layer], outputs=[output], name='srgan_generator')
     return model
 
 def discriminator_block(model, filters, kernel_size, strides):
-    model = Conv2D(filters = filters, kernel_size = kernel_size, strides = strides, padding = "same")(model)
-    model = BatchNormalization(momentum = 0.5)(model)
-    model = LeakyReLU(alpha = 0.2)(model)
+    model = Conv2D(filters, kernel_size, strides, padding="same")(model)
+    model = BatchNormalization(momentum=0.5)(model)
+    model = LeakyReLU(alpha=0.2)(model)
     return model
 
 def build_discriminator(input_shape):
@@ -81,7 +80,7 @@ def build_discriminator(input_shape):
 
     dis9 = Flatten()(dis8)
     dis9 = Dense(1024)(dis9)
-    dis9 = LeakyReLU(alpha = 0.2)(dis9)
+    dis9 = LeakyReLU(alpha=0.2)(dis9)
 
     output = Dense(units=1)(dis9)
     output = Activation('sigmoid')(output)
