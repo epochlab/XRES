@@ -50,16 +50,16 @@ def build_edsr(input_shape, scale, num_filters, residual_blocks, res_block_scali
     return model
 
 def discriminator_block(model, num_filters, kernel_size, strides):
-    model = Conv2D(num_filters, kernel_size, strides, padding = "same")(model)
-    model = BatchNormalization(momentum = 0.5)(model)
-    model = LeakyReLU(alpha = 0.2)(model)
+    model = Conv2D(num_filters, kernel_size, strides, padding='same')(model)
+    model = BatchNormalization(momentum=0.5)(model)
+    model = LeakyReLU(alpha=0.2)(model)
     return model
 
-def build_discriminator(input_shape, num_filters = 64):
-    input_layer = Input(shape = (255,255,3))
+def build_discriminator(input_shape, num_filters=64):
+    input_layer = Input(shape=input_shape)
 
     dis1 = Conv2D(num_filters, 3, padding='same')(input_layer)
-    dis1 = LeakyReLU(alpha = 0.2)(dis1)
+    dis1 = LeakyReLU(alpha=0.2)(dis1)
 
     dis2 = discriminator_block(dis1, num_filters, 3, 2)
 
@@ -74,7 +74,7 @@ def build_discriminator(input_shape, num_filters = 64):
 
     dis9 = Flatten()(dis8)
     dis9 = Dense(1024)(dis9)
-    dis9 = LeakyReLU(alpha = 0.2)(dis9)
+    dis9 = LeakyReLU(alpha=0.2)(dis9)
 
     output = Dense(units=1)(dis9)
     output = Activation('sigmoid')(output)
