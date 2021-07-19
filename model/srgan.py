@@ -27,7 +27,7 @@ def upsampling_block(model, kernal_size, filters, strides):
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
     return model
 
-def build_generator(input_shape):
+def build_srgan(input_shape):
     residual_blocks = 16
     momentum = 0.8
 

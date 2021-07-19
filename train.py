@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 
-from model.srgan import build_discriminator, build_generator
+from model.srgan import build_discriminator, build_srgan
 from model.edsr import build_edsr
 from data import dataIO
 from loss import lossModule
@@ -73,7 +73,7 @@ dataIO = dataIO(DELTA, IMAGE_SHAPE)
 loss = lossModule(IMAGE_SHAPE)
 
 if NETWORK == "SRGAN":
-    generator = build_generator(DOWNSAMPLE_SHAPE)
+    generator = build_srgan(DOWNSAMPLE_SHAPE)
 if NETWORK == "EDSR":
     generator = build_edsr(DOWNSAMPLE_SHAPE, NUM_FILTERS, RES_BLOCKS)
 
