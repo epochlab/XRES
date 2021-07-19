@@ -10,7 +10,7 @@ from tensorflow.keras.optimizers import Adam
 from model.srgan import build_discriminator, build_generator
 from model.edsr import build_edsr
 from data import dataIO
-from loss import generator_loss, discriminator_loss, content_loss
+from loss import lossModule
 from utils import generate_images, log_callback
 
 print("Eager mode:", tf.executing_eagerly())
@@ -58,6 +58,7 @@ print("High Resolution Shape =", IMAGE_SHAPE)
 # -----------------------------
 
 dataIO = dataIO(DELTA, IMAGE_SHAPE)
+loss = lossModule(IMAGE_SHAPE)
 
 if RGB_MEAN:
     mean_array = dataIO.rgb_mean(IMAGE_SHAPE, dataset)
@@ -88,10 +89,10 @@ def train_step(lr, hr):
         sr_output = discriminator(sr, training=True)
 
         # Compute losses
-        con_loss = content_loss(hr, sr)
-        gen_loss = generator_loss(sr_output)
+        con_loss = loss.content_loss(hr, sr)
+        gen_loss = loss.generator_loss(sr_output)
         perc_loss = con_loss + 0.001 * gen_loss
-        disc_loss = discriminator_loss(hr_output, sr_output)
+        disc_loss = loss.discriminator_loss(hr_output, sr_output)
 
     # Compute gradients
     generator_gradients = gen_tape.gradient(perc_loss, generator.trainable_variables)
