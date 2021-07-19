@@ -9,7 +9,7 @@ from tensorflow.keras.optimizers import Adam
 
 from model.srgan import build_discriminator, build_generator
 from model.edsr import build_edsr
-from data import sample_data, rgb_mean
+from data import dataIO
 from loss import generator_loss, discriminator_loss, content_loss
 from utils import generate_images, log_callback
 
@@ -57,8 +57,10 @@ print("High Resolution Shape =", IMAGE_SHAPE)
 
 # -----------------------------
 
+dataIO = dataIO(DELTA, IMAGE_SHAPE)
+
 if RGB_MEAN:
-    mean_array = rgb_mean(IMAGE_SHAPE, dataset)
+    mean_array = dataIO.rgb_mean(IMAGE_SHAPE, dataset)
 
 total_imgs = len(dataset)
 split_index = int(math.floor(total_imgs) * SPLIT_RATIO)
@@ -66,9 +68,6 @@ split_index = int(math.floor(total_imgs) * SPLIT_RATIO)
 n_train_imgs = dataset[:split_index]
 n_test_imgs = dataset[split_index:-VALIDATION_SIZE]
 n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
-
-train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, COCO, RGB_MEAN)
-test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
 
 if NETWORK == "SRGAN":
     generator = build_generator(DOWNSAMPLE_SHAPE)
@@ -112,8 +111,8 @@ loss_min = 9999999
 for epoch in range(EPOCHS):
     print("Epoch: ", epoch)
 
-    test_ds_low, test_ds_high = sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
-    train_ds_low, train_ds_high = sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=RGB_MEAN)
+    test_ds_low, test_ds_high = dataIO.sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
+    train_ds_low, train_ds_high = dataIO.sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=RGB_MEAN)
 
     generate_images(generator, test_ds_low, test_ds_high)
 
