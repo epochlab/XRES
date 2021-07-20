@@ -4,24 +4,23 @@ from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2D, BatchNormalization, UpSampling2D, Activation, LeakyReLU, PReLU, Add, Dense, Flatten
 
 def residual_block(x):
-    filters = [64, 64]
+    num_filters = [64, 64]
     kernel_size = 3
     strides = 1
     momentum = 0.8
     activation = "relu"
 
-    res = Conv2D(filters[0], kernel_size, strides, padding="same")(x)
+    res = Conv2D(num_filters[0], kernel_size, strides, padding="same")(x)
     res = BatchNormalization(momentum=momentum)(res)
     res = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(res)
-    res = Conv2D(filters[1], kernel_size, strides, padding="same")(res)
+    res = Conv2D(num_filters[1], kernel_size, strides, padding="same")(res)
     res = BatchNormalization(momentum=momentum)(res)
 
-    # Add res and x
     res = Add()([res, x])
     return res
 
-def upsampling_block(model, kernal_size, filters, strides):
-    model = Conv2D(filters, kernal_size, strides, padding="same")(model)
+def upsampling_block(model, num_filters, kernel_size, strides):
+    model = Conv2D(num_filters, kernel_size, strides, padding="same")(model)
     model = UpSampling2D(size=2)(model)
     model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
     return model
@@ -45,7 +44,7 @@ def build_srgan(input_shape):
     model = Add()([gen2, gen1])
 
     for index in range(2):
-        model = upsampling_block(model, 3, 256, 1)
+        model = upsampling_block(model, 256, 3, 1)
 
     output = Conv2D(filters=3, kernel_size=9, strides=1, padding='same')(model)
     output = Activation('tanh')(output)
@@ -53,8 +52,8 @@ def build_srgan(input_shape):
     model = Model(inputs=[input_layer], outputs=[output], name='srgan_generator')
     return model
 
-def discriminator_block(model, filters, kernel_size, strides):
-    model = Conv2D(filters, kernel_size, strides, padding="same")(model)
+def discriminator_block(model, num_filters, kernel_size, strides):
+    model = Conv2D(num_filters, kernel_size, strides, padding="same")(model)
     model = BatchNormalization(momentum=0.5)(model)
     model = LeakyReLU(alpha=0.2)(model)
     return model

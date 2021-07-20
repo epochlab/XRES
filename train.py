@@ -52,8 +52,8 @@ NUM_FILTERS = 256
 
 EPOCHS = 300000
 
-print("Low Resolution Shape =", DOWNSAMPLE_SHAPE)
 print("High Resolution Shape =", IMAGE_SHAPE)
+print("Low Resolution Shape =", DOWNSAMPLE_SHAPE)
 
 # -----------------------------
 

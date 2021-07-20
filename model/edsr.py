@@ -13,6 +13,12 @@ def edsr_residual(x, num_filters, scaling):
     res = Add()([res, x])
     return res
 
+def upsampling_block(model, num_filters, kernal_size, strides):
+    model = Conv2D(num_filters, kernal_size, strides, padding="same")(model)
+    model = UpSampling2D(size=2)(model)
+    model = PReLU(alpha_initializer='zeros', alpha_regularizer=None, alpha_constraint=None, shared_axes=[1,2])(model)
+    return model
+
 def gridless_upsampling(model, num_filters, scale):
     def upsample(x, factor):
         x = UpSampling2D(size=factor)(model)
@@ -41,7 +47,10 @@ def build_edsr(input_shape, scale, num_filters, residual_blocks, res_block_scali
     gen2 = Conv2D(num_filters, kernel_size=3, padding='same')(res)
     model = Add()([gen2, gen1])
 
-    model = gridless_upsampling(model, 256, scale)
+    for index in range(2):
+        model = upsampling_block(model, num_filters, 3, 1)
+
+    # model = gridless_upsampling(model, num_filters, scale)
 
     output = Conv2D(3, 9, padding='same')(model)
     output = Activation('tanh')(output)
