@@ -9,7 +9,7 @@ Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (
 
 ### Packages
 
-`tensorflow-2.x` `numpy` `pillow`
+`tensorflow-2.x` `numpy` `pillow` `tqdm`
 
 ### Dataset
 - [Vimeo-90K](http://toflow.csail.mit.edu/index.html#septuplet): Large-scale, high-quality dataset, consisting of 89,800 clips from vimeo.com.<br />
