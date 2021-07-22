@@ -111,7 +111,7 @@ def train_step(ds_low, ds_high):
 timestamp, summary_writer, checkpoint_prefix = log_callback(OUTDIR, generator, discriminator, generator_optimizer, discriminator_optimizer)
 loss_min = 9999999
 
-for epoch in tqdm(range(EPOCHS)):
+for epoch in tqdm(range(EPOCHS, desc="Training")):
 
     test_ds_low, test_ds_high = dataIO.sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
     train_ds_low, train_ds_high = dataIO.sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=RGB_MEAN)
