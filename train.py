@@ -3,6 +3,7 @@
 import os, math, random
 
 import numpy as np
+from tqdm import tqdm
 
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
@@ -107,8 +108,7 @@ def train_step(lr, hr):
 timestamp, summary_writer, checkpoint_prefix = log_callback(OUTDIR, generator, discriminator, generator_optimizer, discriminator_optimizer)
 loss_min = 9999999
 
-for epoch in range(EPOCHS):
-    print("Epoch: ", epoch)
+for epoch in tqdm(range(EPOCHS)):
 
     test_ds_low, test_ds_high = dataIO.sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
     train_ds_low, train_ds_high = dataIO.sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=RGB_MEAN)
@@ -116,10 +116,6 @@ for epoch in range(EPOCHS):
     generate_images(generator, test_ds_low, test_ds_high)
 
     for i in range(BATCH_SIZE):
-        print('.', end='')
-        if (i+1) % 100 == 0:
-            print()
-
         lr = tf.expand_dims(train_ds_low[i], axis=0)
         hr = tf.expand_dims(train_ds_high[i], axis=0)
 
@@ -133,7 +129,7 @@ for epoch in range(EPOCHS):
 
     if perc_loss < loss_min:
         generator.save(OUTDIR + "/results/generator_" + timestamp + '.h5')
-        print(" Model saved")
+        # print(" Model saved")
         loss_min = perc_loss
 
     if (epoch + 1) % 10000 == 0:
