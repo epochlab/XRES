@@ -37,7 +37,7 @@ random.shuffle(dataset)
 # -----------------------------
 
 NETWORK = "EDSR"
-RGB_MEAN = False
+RGB_MEAN = True
 COCO = True
 
 DELTA = 4
@@ -58,6 +58,9 @@ print("Low Resolution Shape =", DOWNSAMPLE_SHAPE)
 
 # -----------------------------
 
+dataIO = dataIO(DELTA, IMAGE_SHAPE)
+loss = lossModule(IMAGE_SHAPE)
+
 if RGB_MEAN:
     mean_array = dataIO.rgb_mean(IMAGE_SHAPE, dataset)
 
@@ -69,9 +72,6 @@ n_test_imgs = dataset[split_index:-VALIDATION_SIZE]
 n_val_imgs = dataset[total_imgs-VALIDATION_SIZE:]
 
 # -----------------------------
-
-dataIO = dataIO(DELTA, IMAGE_SHAPE)
-loss = lossModule(IMAGE_SHAPE)
 
 if NETWORK == "SRGAN":
     generator = build_srgan(DOWNSAMPLE_SHAPE)

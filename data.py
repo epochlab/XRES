@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from PIL import Image
+from tqdm import tqdm
 import numpy as np
 import tensorflow as tf
 
@@ -78,9 +79,8 @@ class dataIO:
     def rgb_mean(self, input_shape, dataset):
         array = np.zeros(input_shape, dtype='float32')
 
-        for fid, file, in enumerate(dataset):
-            print(str(fid) + "/" + str(len(dataset)-1))
-            instance = self.reformat(load(file))
+        for file in tqdm(dataset, desc="RGB Mean"):
+            instance = self.reformat(self.load(file))
             array += instance
 
         mean_array = array / len(dataset)
