@@ -2,6 +2,7 @@
 
 from PIL import Image
 from tqdm import tqdm
+
 import numpy as np
 import tensorflow as tf
 
@@ -22,7 +23,7 @@ class dataIO:
         aug_image = input_image
 
         aug_image = tf.image.random_contrast(aug_image, 0.8, 1.2)
-        aug_img = tf.image.random_brightness(aug_image, 0.2)
+        aug_image = tf.image.random_brightness(aug_image, 0.2)
 
         if np.random.random_sample() < 0.5:
             img = tf.image.flip_left_right(aug_image)
