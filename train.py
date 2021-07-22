@@ -84,7 +84,10 @@ generator_optimizer = Adam(0.0002, 0.5)
 discriminator_optimizer = Adam(0.0002, 0.5)
 
 @tf.function
-def train_step(lr, hr):
+def train_step(ds_low, ds_high):
+    lr = tf.expand_dims(ds_low, axis=0)
+    hr = tf.expand_dims(ds_high, axis=0)
+
     with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
         sr = generator(lr, training=True)
         hr_output = discriminator(hr, training=True)
@@ -116,10 +119,7 @@ for epoch in tqdm(range(EPOCHS)):
     generate_images(generator, test_ds_low, test_ds_high)
 
     for i in range(BATCH_SIZE):
-        lr = tf.expand_dims(train_ds_low[i], axis=0)
-        hr = tf.expand_dims(train_ds_high[i], axis=0)
-
-        con_loss, gen_loss, perc_loss, disc_loss = train_step(lr, hr)
+        con_loss, gen_loss, perc_loss, disc_loss = train_step(train_ds_low[i], train_ds_high[i])
 
         with summary_writer.as_default():
             tf.summary.scalar('con_loss', con_loss, step=epoch)
