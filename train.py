@@ -24,7 +24,7 @@ ROOT_0 = '/mnt/vanguard/datasets/vimeo_90k/toflow'
 ROOT_1 = '/mnt/vanguard/datasets/ffhq-dataset/ffhq-512'
 ROOT_2 = '/mnt/vanguard/datasets/celeba_bundle/data_hq_1024'
 
-DIR_LIST = [ROOT_1, ROOT_2]
+DIR_LIST = [ROOT_1]
 
 dataset = []
 for ROOT in DIR_LIST:
@@ -37,7 +37,7 @@ random.shuffle(dataset)
 # -----------------------------
 
 NETWORK = "EDSR"
-RGB_MEAN = False
+RGB_MEAN = True
 COCO = True
 
 DELTA = 4
@@ -78,6 +78,8 @@ if NETWORK == "SRGAN":
 if NETWORK == "EDSR":
     generator = build_edsr(DOWNSAMPLE_SHAPE, DELTA, NUM_FILTERS, RES_BLOCKS)
 
+print(generator.summary)
+
 discriminator = build_discriminator(IMAGE_SHAPE)
 
 generator_optimizer = Adam(0.0002, 0.5)
@@ -113,8 +115,8 @@ loss_min = 9999999
 
 for epoch in tqdm(range(EPOCHS), desc="Training"):
 
-    test_ds_low, test_ds_high = dataIO.sample_data(n_test_imgs, BATCH_SIZE, coco=False, rgb_mean=False)
-    train_ds_low, train_ds_high = dataIO.sample_data(n_train_imgs, BATCH_SIZE, coco=True, rgb_mean=RGB_MEAN)
+    test_ds_low, test_ds_high = dataIO.sample_data(n_test_imgs, BATCH_SIZE, mean_array, coco=False, rgb_mean=False)
+    train_ds_low, train_ds_high = dataIO.sample_data(n_train_imgs, BATCH_SIZE, mean_array, coco=True, rgb_mean=RGB_MEAN)
 
     generate_images(generator, test_ds_low, test_ds_high)
 

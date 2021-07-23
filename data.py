@@ -54,7 +54,7 @@ class dataIO:
         high_resolution_image = tf.image.resize(input_image, self.high_resolution_shape[:2], method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
         return low_resolution_image, high_resolution_image
 
-    def sample_data(self, data, batch_size, coco, rgb_mean):
+    def sample_data(self, data, batch_size, mean_array, coco, rgb_mean):
         img_batch = np.random.choice(data, size=batch_size)
 
         ds_low = []
@@ -64,6 +64,9 @@ class dataIO:
             input_image = self.load(index)
             x_image = self.reformat(input_image)
             n_image = self.normalize(x_image)
+
+            if rgb_mean:
+                n_image -= self.normalize(mean_array)
 
             if coco:
                 n_image = self.augment(n_image)
