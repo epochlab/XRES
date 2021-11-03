@@ -24,7 +24,7 @@ ROOT_0 = '/mnt/artemis/library/datasets/vimeo_90k/toflow'
 ROOT_1 = '/mnt/artemis/library/datasets/ffhq-dataset/ffhq-512'
 ROOT_2 = '/mnt/artemis/library/datasets/celeba_bundle/data_hq_1024'
 
-DIR_LIST = [ROOT_1]
+DIR_LIST = [ROOT_0]
 
 dataset = []
 for ROOT in DIR_LIST:
@@ -37,7 +37,7 @@ random.shuffle(dataset)
 # -----------------------------
 
 NETWORK = "EDSR"
-RGB_MEAN = True
+RGB_MEAN = False
 COCO = True
 
 DELTA = 4
