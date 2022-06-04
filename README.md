@@ -22,5 +22,5 @@ Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (
 
 ### Acknowledgments
 [Photo-Realistic Single Image Super-Resolution Using a GAN](https://arxiv.org/pdf/1609.04802.pdf) (2017)<br />
-[Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/pdf/1707.02921.pdf) (2017)
-[Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004v3.pdf) (2018)<br />
+[Enhanced Deep Residual Networks for Single Image Super-Resolution](https://arxiv.org/pdf/1707.02921.pdf) (2017)<br />
+[Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004v3.pdf) (2018)
