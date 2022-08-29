@@ -1,4 +1,4 @@
-# xres
+# XRES
 
 **Project ID:** PcsT4LaG
 
