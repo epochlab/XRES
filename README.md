@@ -2,7 +2,11 @@
 
 **Project ID:** PcsT4LaG
 
-![alt text](https://github.com/epochlab/xres/blob/main/sample.png)
+<p align="center">
+  <img src="https://github.com/epochlab/xres/blob/main/sample.png">
+</p>
+
+--------------------------------------------------------------------
 
 #### Single Image Super Resolution (SISR)
 Abstract: *Single Image Super Resolution aims to reconstruct a high-resolution (HR) image for a low-resolution (LR) observation.*
