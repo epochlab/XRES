@@ -3,7 +3,7 @@
 **Project ID:** PcsT4LaG
 
 <p align="center">
-  <img src="https://github.com/epochlab/xres/blob/main/sample.png">
+  <img src="https://github.com/epochlab/XRES/blob/main/sample.png">
 </p>
 
 --------------------------------------------------------------------
